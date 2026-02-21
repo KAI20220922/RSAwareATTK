@@ -12,7 +12,7 @@ This repository contains the official implementation of the **RS-aware targeted 
 
 > **A Targeted Attack against Certifiably Robust Smoothed Classifiers**
 
-The provided implementation corresponds exactly to the **white-box attack against the smoothed classifier** used in the paper experiments.
+The provided implementation corresponds exactly to the **targeted attack against the smoothed classifier** used in the paper experiments.
 
 The attack explicitly accounts for the randomized smoothing prediction mechanism and performs optimization accordingly.
 
@@ -20,7 +20,7 @@ The attack explicitly accounts for the randomized smoothing prediction mechanism
 
 # Usage
 
-The following snippet reproduces the **white-box RS-aware attack** used in the paper *A Targeted Attack against Certifiably Robust Smoothed Classifiers* (WIFS 2025):
+The following snippet reproduces the **targeted RS-aware attack** used in the paper *A Targeted Attack against Certifiably Robust Smoothed Classifiers* (WIFS 2025):
 
 ```python
 attacker = RSAwareATTK(
@@ -106,6 +106,52 @@ x_adv = attacker.attack_whitebox(
 - **use_clip_range**  
   If `True`, clipping is applied in normalized input space (e.g., ImageNet bounds).
 
+---
+
+# Controlling the Attack Strength
+
+The strength of the RSAware white-box attack can be adjusted through the following parameters:
+
+---
+
+## 1️⃣ Step Size (α)
+
+The effective step size (denoted as **α** in the paper) is controlled through the `max_norm` parameter:
+
+```python
+lr = self.max_norm / 400 * 2
+```
+## 2️⃣ Number of Optimization Steps (`steps`)
+
+- Increasing **`steps`** (corresponding to **T** in the paper) allows more optimization iterations.
+- More iterations generally increase attack success rate.
+- Larger `steps` typically produce stronger but slower attacks.
+
+---
+
+## 3️⃣ Number of Noise Vectors (`num_noise_vectors`)
+
+- Increasing **`num_noise_vectors`** improves the approximation of the smoothed classifier.
+- Larger values make the attack more aligned with the randomized smoothing decision rule.
+- This typically leads to stronger but computationally more expensive attacks.
+
+---
+
+## Practical Guidance
+
+To strengthen the attack:
+
+- Increase `max_norm` (larger step size α)
+- Increase `steps`
+- Increase `num_noise_vectors`
+
+To weaken the attack:
+
+- Decrease `max_norm`
+- Reduce `steps`
+- Reduce `num_noise_vectors`
+
+Adjust these parameters depending on the desired trade-off between attack strength and computational cost.
 ---
 
 ## Reference
